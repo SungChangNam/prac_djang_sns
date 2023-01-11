@@ -1,12 +1,9 @@
 {% extends 'base.html' %}
-
-{% block title %}
-    회원가입
-{% endblock %}
+{% block title %}회원가입{% endblock %}
 {% block content %}
     <div class="container">
         <div class="wrap">
-            <h2 class="title-center"> 회원가입 </h2>
+            <h2 class="title-center">회원가입</h2>
             <form class="form-area"method="post" action="/sign-up/">
                 {% csrf_token %}
                 <div class="form-group mt-2 mb-2">
@@ -26,12 +23,12 @@
                     <input type="text" class="form-control" id="bio" name="bio">
                 </div>
                 <hr>
+                {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
                 <div style="float: right">
                     <button type="submit" class="btn btn-primary">회원가입</button>
                     <a href="/sign-in" class="btn btn-secondary">로그인 페이지로</a>
                 </div>
             </form>
-
         </div>
     </div>
 {% endblock %}

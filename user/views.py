@@ -14,18 +14,22 @@ def sign_up_view(request):
         else:
             return render(request, 'user/signup.html')
     elif request.method =='POST':
-        username = request.POST.get('username',None)
-        password = request.POST.get('password',None)
-        password2 = request.POST.get('password2',None)
-        bio = request.POST.get('bio',None)
+        username = request.POST.get('username','')
+        password = request.POST.get('password','')
+        password2 = request.POST.get('password2','')
+        bio = request.POST.get('bio','')
         
         
         if password != password2:
-            return render(request,'user/signup.html')
+            
+            return render(request,'user/signup.html',{'error':'비밀번호가 서로 다릅니다.'})
         else:
+            if username == '' or password =='':
+                return render(request,'user/signup.html',{'error':'이름 또는 비밀번호를 확인해 주세요'})
+            
             exist_user = get_user_model().objects.filter(username=username)
             if exist_user:
-                return render(request, 'user/signup.html') #사용자 존재 있으면 나타나는 페이지 
+                return render(request, 'user/signup.html',{'error':'이미 존재하는 회원이름 입니다.'}) #사용자 존재 있으면 나타나는 페이지 
             else:
                 UserModel.objects.create_user(username=username,password=password,bio=bio)
 
@@ -34,15 +38,16 @@ def sign_up_view(request):
 
 def sign_in_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username',None)
-        password  = request.POST.get('password',None)
+        username = request.POST.get('username','')
+        password  = request.POST.get('password','')
         
         me =auth.authenticate(request, username=username, password=password)
         if me is not None:
             auth.login(request,me)
             return redirect('/')
         else:
-            return redirect('/sign-in/')
+            return render(request,'user/signin.html',{'error':'유저이름 또는 패스워드를 확인 해 주세요.'})
+        
     elif request.method == 'GET':
         user = request.user.is_authenticated
         if user:
